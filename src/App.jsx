@@ -33,7 +33,7 @@ function App() {
       <div className="app-container">
         {/* Navbar */}
         <nav className="navbar animate-fade-in">
-          <div className="logo">R. Anderson</div>
+          <div className="logo">Rodrigo Anderson</div>
           <div className="nav-links">
             <a href="#about">Terminal</a>
             <a href="#vision">Visión</a>
@@ -52,6 +52,7 @@ function App() {
               <span className="text-gradient">Decodificando</span> la economía mediante algoritmos y datos.
             </h1>
             <p className="animate-fade-in delay-3">
+              &gt; USER: Rodrigo Anderson Capia Condori.<br/>
               &gt; STATUS: Estudiante de Economía (2do Semestre) - UNSA.<br/>
               &gt; MISSION: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
             </p>
