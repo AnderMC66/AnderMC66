@@ -46,15 +46,15 @@ function App() {
         <header className="hero" id="about">
           <div className="hero-content">
             <div className="hero-badge animate-fade-in delay-1">
-              SYS_INIT: Economía & IA
+              INICIO_SISTEMA: Economía & IA
             </div>
             <h1 className="animate-fade-in delay-2">
               <span className="text-gradient">Decodificando</span> la economía mediante algoritmos y datos.
             </h1>
             <p className="animate-fade-in delay-3">
-              &gt; USER: Rodrigo Anderson Capia Condori.<br/>
-              &gt; STATUS: Estudiante de Economía (2do Semestre) - UNSA.<br/>
-              &gt; MISSION: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
+              &gt; USUARIO: Rodrigo Anderson Capia Condori.<br/>
+              &gt; ESTADO: Estudiante de Economía (2do Semestre) - UNSA.<br/>
+              &gt; MISIÓN: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
             </p>
             <div className="hero-buttons animate-fade-in delay-3">
               <a href="#projects" className="btn btn-primary">
@@ -64,7 +64,7 @@ function App() {
                 Extraer CV <Download size={18} />
               </a>
               <a href="#contact" className="btn btn-outline">
-                Ping (Contacto) <Terminal size={18} />
+                Conectar <Terminal size={18} />
               </a>
             </div>
           </div>
@@ -74,8 +74,11 @@ function App() {
         <section id="vision" className="vision">
           <div className="vision-box glass animate-fade-in">
             <h2><Brain color="var(--accent-cyan)" /> Protocolo de Visión</h2>
+            <blockquote style={{borderLeft: '4px solid var(--accent-purple)', paddingLeft: '1.5rem', fontStyle: 'italic', color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1.25rem', lineHeight: '1.6'}}>
+              "No basta con analizar y predecir los modelos económicos; mi objetivo es programar las soluciones tecnológicas que los transforman en progreso real."
+            </blockquote>
             <p>
-              La <strong>Economía del futuro</strong> está codificada en datos. Iniciando mi formación académica, busco dominar las herramientas de <strong>Inteligencia Artificial y Análisis de Datos</strong> para hackear los paradigmas tradicionales. Mi objetivo final es transicionar hacia la Ingeniería de Sistemas, arquitectando soluciones tecnológicas complejas y automatizadas con un impacto social medible.
+              La <strong>Economía del futuro</strong> está codificada en datos. Iniciando mi formación académica, busco dominar las herramientas de <strong>Inteligencia Artificial y Análisis de Datos</strong> para evolucionar los paradigmas tradicionales. Mi meta final es transicionar hacia la Ingeniería de Sistemas, arquitectando soluciones tecnológicas complejas y automatizadas con un impacto social medible.
             </p>
           </div>
         </section>
@@ -183,7 +186,7 @@ function App() {
                 <p>Módulo de análisis y visualización interactiva de índices inflacionarios y variables macroeconómicas.</p>
                 <div className="project-links">
                   <a href="https://github.com/AnderMC66/DASHBOARD-INFLACION" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Source Code
+                    <Code size={16} /> Repositorio
                   </a>
                 </div>
               </div>
@@ -199,7 +202,7 @@ function App() {
                 <p>Servidor Model Context Protocol diseñado para interconectar IAs con las bases de datos del Banco Central de Reserva.</p>
                 <div className="project-links">
                   <a href="https://github.com/AnderMC66/mcp-bcr" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Source Code
+                    <Code size={16} /> Repositorio
                   </a>
                 </div>
               </div>
@@ -215,7 +218,7 @@ function App() {
                 <p>Herramientas MCP avanzadas para minería y análisis de datos tributarios y económicos del gobierno peruano.</p>
                 <div className="project-links">
                   <a href="https://github.com/AnderMC66/mcp-sunat" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Source Code
+                    <Code size={16} /> Repositorio
                   </a>
                 </div>
               </div>
@@ -235,7 +238,7 @@ function App() {
             </a>
           </div>
           <p style={{textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.8rem'}}>
-            <span style={{color: 'var(--accent-cyan)'}}>SYS_END</span> © 2026 Rodrigo Anderson Capia Condori.
+            <span style={{color: 'var(--accent-cyan)'}}>FIN_SISTEMA</span> © 2026 Rodrigo Anderson Capia Condori.
           </p>
         </footer>
       </div>
