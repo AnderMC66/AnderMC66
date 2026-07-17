@@ -164,11 +164,11 @@ function App() {
                  <TrendingUp size={64} color="rgba(255,255,255,0.5)" />
               </div>
               <div className="project-info">
-                <h3>Exploración de Datos Económicos</h3>
-                <p>Prácticas aplicando lógica de programación y scripts básicos en Python para procesar indicadores económicos.</p>
+                <h3>Dashboard de Inflación</h3>
+                <p>Análisis y visualización interactiva de datos de inflación y variables macroeconómicas clave.</p>
                 <div className="project-links">
-                  <a href="#" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}}>
-                    <Code size={16} /> Ver Detalles
+                  <a href="https://github.com/AnderMC66/DASHBOARD-INFLACION" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}}>
+                    <Code size={16} /> Ver en GitHub
                   </a>
                 </div>
               </div>
@@ -177,14 +177,30 @@ function App() {
             {/* Project 2 */}
             <div className="project-card glass">
               <div className="project-img" style={{background: 'linear-gradient(45deg, #a855f7, #ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                 <Database size={64} color="rgba(255,255,255,0.5)" />
+              </div>
+              <div className="project-info">
+                <h3>MCP BCRP</h3>
+                <p>Servidor MCP (Model Context Protocol) para integrar asistentes de Inteligencia Artificial con la Base de Datos del Banco Central de Reserva del Perú.</p>
+                <div className="project-links">
+                  <a href="https://github.com/AnderMC66/mcp-bcr" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}}>
+                    <Code size={16} /> Ver en GitHub
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            {/* Project 3 */}
+            <div className="project-card glass">
+              <div className="project-img" style={{background: 'linear-gradient(45deg, #f59e0b, #ef4444)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                  <Cpu size={64} color="rgba(255,255,255,0.5)" />
               </div>
               <div className="project-info">
-                <h3>Estudio de Herramientas de IA</h3>
-                <p>Investigación teórica y pequeños experimentos sobre cómo aprovechar herramientas de inteligencia artificial en el día a día.</p>
+                <h3>MCP SUNAT / MEF</h3>
+                <p>Herramientas MCP para consultar y analizar datos tributarios y económicos gubernamentales mediante IA.</p>
                 <div className="project-links">
-                  <a href="#" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}}>
-                    <Code size={16} /> Ver Detalles
+                  <a href="https://github.com/AnderMC66/mcp-sunat" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}}>
+                    <Code size={16} /> Ver en GitHub
                   </a>
                 </div>
               </div>
