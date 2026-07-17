@@ -52,8 +52,8 @@ function App() {
               <span className="text-gradient">Decodificando</span> la economía mediante algoritmos y datos.
             </h1>
             <p className="animate-fade-in delay-3">
-              > STATUS: Estudiante de Economía (2do Semestre) - UNSA.<br/>
-              > MISSION: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
+              &gt; STATUS: Estudiante de Economía (2do Semestre) - UNSA.<br/>
+              &gt; MISSION: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
             </p>
             <div className="hero-buttons animate-fade-in delay-3">
               <a href="#projects" className="btn btn-primary">
@@ -121,7 +121,7 @@ function App() {
         <section className="chart-section">
           <h2 className="section-title">Análisis Predictivo</h2>
           <p style={{color: 'var(--text-secondary)', marginBottom: '2rem'}}>
-            > Simulador renderizado con Recharts: Adopción de IA vs Productividad Económica.
+            &gt; Simulador renderizado con Recharts: Adopción de IA vs Productividad Económica.
           </p>
           <div className="chart-container glass">
             <ResponsiveContainer width="100%" height="100%">
