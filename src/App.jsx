@@ -218,7 +218,7 @@ function App() {
             <a href="#" className="social-icon">
               <Briefcase size={24} />
             </a>
-            <a href="mailto:tu-correo@ejemplo.com" className="social-icon">
+            <a href="mailto:rodrigocapiz67@gmail.com" className="social-icon">
               <Mail size={24} />
             </a>
           </div>
