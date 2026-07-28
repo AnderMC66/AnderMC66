@@ -1,4 +1,4 @@
-# 📊 Rodrigo Anderson | Economía × Tecnología
+#  Rodrigo Anderson | Economía × Tecnología
 
 ### Decodificando la economía mediante algoritmos y datos.
 
