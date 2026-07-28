@@ -1,247 +1,405 @@
-import React, { useState, useEffect } from 'react';
-import { Briefcase, Mail, ExternalLink, Code, Database, Cpu, Download, Brain, GraduationCap, TrendingUp, Terminal, Activity } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect, useRef } from 'react';
+import { Mail, Code, Database, Cpu, Brain, GraduationCap, TrendingUp, Terminal, MapPin, ArrowDown } from 'lucide-react';
 import './App.css';
 
-const data = [
-  { name: '2022', Productividad: 4000, IA_Adoptada: 1000 },
-  { name: '2023', Productividad: 4500, IA_Adoptada: 2500 },
-  { name: '2024', Productividad: 5200, IA_Adoptada: 4800 },
-  { name: '2025', Productividad: 6500, IA_Adoptada: 7500 },
-  { name: '2026', Productividad: 8200, IA_Adoptada: 9800 },
-];
+/* 2. Fondo Constelación (Nodos interactivos) */
+const ParticlesBackground = () => {
+  const canvasRef = useRef(null);
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    
+    const particles = [];
+    for(let i=0; i<70; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 1.5 + 0.5
+      });
+    }
+    
+    let mouse = { x: null, y: null };
+    
+    const handleMouse = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    
+    window.addEventListener('mousemove', handleMouse);
+    
+    const handleResize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    };
+    window.addEventListener('resize', handleResize);
+    
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.6)';
+      ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
+      
+      for(let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+        
+        if(mouse.x && mouse.y) {
+          let dx = mouse.x - p.x;
+          let dy = mouse.y - p.y;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 150) {
+            p.x -= dx * 0.02;
+            p.y -= dy * 0.02;
+          }
+        }
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        for(let j = i + 1; j < particles.length; j++) {
+          let p2 = particles[j];
+          let dx = p.x - p2.x;
+          let dy = p.y - p2.y;
+          let dist = Math.sqrt(dx*dx + dy*dy);
+          
+          if(dist < 130) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+    render();
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handleMouse);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  return <canvas ref={canvasRef} className="particles-canvas" />;
+};
+
+/* 5. Botones Magnéticos */
+const MagneticButton = ({ children, className, href, target, rel, isLink = true }) => {
+  const buttonRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
+    const x = (clientX - (left + width / 2)) * 0.4;
+    const y = (clientY - (top + height / 2)) * 0.4;
+    setPosition({ x, y });
+  };
+  
+  const handleMouseLeave = () => {
+    setPosition({ x: 0, y: 0 });
+  };
+
+  const Element = isLink ? 'a' : 'div';
+  
+  return (
+    <Element
+      href={href}
+      target={target}
+      rel={rel}
+      ref={buttonRef}
+      className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ 
+        transform: `translate(${position.x}px, ${position.y}px)`, 
+        transition: position.x === 0 ? 'transform 0.5s ease-out' : 'transform 0.1s linear' 
+      }}
+    >
+      {children}
+    </Element>
+  );
+};
+
 
 function App() {
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-
+  /* 1. Efecto Spotlight global */
+  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      });
+    const handleGlobalMouse = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleGlobalMouse);
+    return () => window.removeEventListener('mousemove', handleGlobalMouse);
   }, []);
 
   return (
-    <div style={{ '--mouse-x': `${mousePos.x}%`, '--mouse-y': `${mousePos.y}%` }}>
-      <div className="bg-gradient"></div>
-      <div className="mouse-glow"></div>
+    <div className="app-container" style={{ '--mouse-x': `${mousePos.x}px`, '--mouse-y': `${mousePos.y}px` }}>
       
-      <div className="app-container">
-        {/* Navbar */}
-        <nav className="navbar animate-fade-in">
-          <div className="logo">Rodrigo Anderson</div>
-          <div className="nav-links">
-            <a href="#about">Terminal</a>
-            <a href="#vision">Visión</a>
-            <a href="#skills">Módulos</a>
-            <a href="#projects">Data</a>
-          </div>
-        </nav>
+      {/* Spotlight Overlay */}
+      <div className="spotlight"></div>
 
-        {/* Hero Section */}
-        <header className="hero" id="about">
-          <div className="hero-content">
-            <div className="hero-badge animate-fade-in delay-1">
-              INICIO_SISTEMA: Economía & IA
-            </div>
-            <h1 className="animate-fade-in delay-2">
-              <span className="text-gradient">Decodificando</span> la economía mediante algoritmos y datos.
-            </h1>
-            <p className="animate-fade-in delay-3">
-              &gt; USUARIO: Rodrigo Anderson Capia Condori.<br/>
-              &gt; ESTADO: Estudiante de Economía (2do Semestre) - UNSA.<br/>
-              &gt; MISIÓN: Construir bases sólidas en lógica de programación, Python y explorar el impacto de la Inteligencia Artificial en estructuras sociales.
-            </p>
-            <div className="hero-buttons animate-fade-in delay-3">
-              <a href="#projects" className="btn btn-primary">
-                Ejecutar Proyectos <Code size={18} />
-              </a>
-              <a href="/CV_Rodrigo_Anderson.pdf" download className="btn btn-purple">
-                Extraer CV <Download size={18} />
-              </a>
-              <a href="#contact" className="btn btn-outline">
-                Conectar <Terminal size={18} />
-              </a>
-            </div>
-          </div>
-        </header>
+      {/* Navbar */}
+      <nav className="navbar animate-in">
+        <div className="logo">Rodrigo Anderson<span>.</span></div>
+        <div className="nav-links">
+          <a href="#sobre-mi">Sobre mí</a>
+          <a href="#habilidades">Módulos</a>
+          <a href="#proyectos">Proyectos</a>
+          <a href="https://github.com/AnderMC66" target="_blank" rel="noopener noreferrer" className="btn-github">
+            GitHub ↗
+          </a>
+        </div>
+      </nav>
 
-        {/* Vision Section */}
-        <section id="vision" className="vision">
-          <div className="vision-box glass animate-fade-in">
-            <h2><Brain color="var(--accent-cyan)" /> Protocolo de Visión</h2>
-            <blockquote style={{borderLeft: '4px solid var(--accent-purple)', paddingLeft: '1.5rem', fontStyle: 'italic', color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1.25rem', lineHeight: '1.6'}}>
-              "No basta con analizar y predecir los modelos económicos; mi objetivo es programar las soluciones tecnológicas que los transforman en progreso real."
-            </blockquote>
-            <p>
-              La <strong>Economía del futuro</strong> está codificada en datos. Iniciando mi formación académica, busco dominar las herramientas de <strong>Inteligencia Artificial y Análisis de Datos</strong> para evolucionar los paradigmas tradicionales. Mi meta final es transicionar hacia la Ingeniería de Sistemas, arquitectando soluciones tecnológicas complejas y automatizadas con un impacto social medible.
-            </p>
-          </div>
-        </section>
-
-        {/* Timeline Section */}
-        <section className="timeline">
-          <h2 className="section-title">Log del Sistema</h2>
+      {/* Hero Section */}
+      <section className="hero">
+        <ParticlesBackground />
+        
+        <div className="hero-content">
+          <p className="hero-location animate-in delay-1">✦ Arequipa — Perú</p>
           
-          <div className="timeline-item glass">
-            <div className="timeline-icon">
-              <GraduationCap size={24} />
-            </div>
-            <div className="timeline-content">
-              <span>Fase Actual</span>
-              <h3>Economía (UNSA)</h3>
-              <p style={{color: 'var(--text-secondary)'}}>Adquiriendo fundamentos de teoría económica y modelos matemáticos en la Universidad Nacional de San Agustín de Arequipa.</p>
-            </div>
+          {/* 4. Revelado Tipográfico */}
+          <h1 className="hero-title reveal-text">
+            <span>Rodrigo Anderson</span>
+          </h1>
+          <h1 className="hero-title reveal-text delay-1" style={{marginTop: '-1rem'}}>
+            <span className="gradient-text">Capia Condori</span>
+          </h1>
+          
+          <div className="hero-subtitle animate-in delay-3">
+            <span className="hero-line"></span>
+            <p className="hero-subtitle-text">Economía <span style={{color: 'var(--text-primary)'}}>×</span> Tecnología</p>
           </div>
-
-          <div className="timeline-item glass">
-            <div className="timeline-icon">
-              <Terminal size={24} />
-            </div>
-            <div className="timeline-content">
-              <span>Procesos en 2do Plano</span>
-              <h3>Python & Algoritmia</h3>
-              <p style={{color: 'var(--text-secondary)'}}>Desarrollo activo de lógica de programación, creación de scripts, automatización y exploración de stacks web (Next.js).</p>
-            </div>
-          </div>
-
-          <div className="timeline-item glass" style={{borderColor: 'var(--accent-purple)'}}>
-            <div className="timeline-icon" style={{borderColor: 'var(--accent-purple)', color: 'var(--accent-purple)'}}>
-              <Cpu size={24} />
-            </div>
-            <div className="timeline-content">
-              <span style={{color: 'var(--accent-purple)'}}>Objetivo Futuro</span>
-              <h3>Ingeniería de Sistemas</h3>
-              <p style={{color: 'var(--text-secondary)'}}>Formalizar la ingeniería para liderar el desarrollo y escalamiento global de arquitecturas de software.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Interactive Data Section */}
-        <section className="chart-section">
-          <h2 className="section-title">Análisis Predictivo</h2>
-          <p style={{color: 'var(--text-secondary)', marginBottom: '2rem'}}>
-            &gt; Simulador renderizado con Recharts: Adopción de IA vs Productividad Económica.
+          
+          <p className="hero-desc animate-in delay-3">
+            Estudiante de Economía en la <strong>UNSA</strong>. <br/>
+            Constructor de soluciones digitales que conectan el análisis de datos con el impacto real, decodificando la economía mediante algoritmos.
           </p>
-          <div className="chart-container glass">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,240,255,0.1)" vertical={false} />
-                <XAxis dataKey="name" stroke="var(--text-secondary)" tick={{fill: 'var(--text-secondary)'}} />
-                <YAxis stroke="var(--text-secondary)" tick={{fill: 'var(--text-secondary)'}} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: 'rgba(5,5,10,0.9)', border: '1px solid var(--accent-cyan)', borderRadius: '4px', backdropFilter: 'blur(10px)' }}
-                  itemStyle={{ color: 'var(--text-primary)' }}
-                />
-                <Line type="monotone" dataKey="Productividad" stroke="var(--accent-cyan)" strokeWidth={3} dot={{ r: 4, fill: 'var(--accent-cyan)' }} activeDot={{ r: 8, fill: '#fff' }} />
-                <Line type="monotone" dataKey="IA_Adoptada" stroke="var(--accent-purple)" strokeWidth={3} dot={{ r: 4, fill: 'var(--accent-purple)' }} activeDot={{ r: 8, fill: '#fff' }} />
-              </LineChart>
-            </ResponsiveContainer>
+          
+          <div className="hero-buttons animate-in delay-4">
+            <MagneticButton href="#proyectos" className="btn-primary">
+              Ver Proyectos
+            </MagneticButton>
+            <MagneticButton href="#contacto" className="btn-secondary">
+              Contactar
+            </MagneticButton>
+            <MagneticButton href="https://github.com/AnderMC66" target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+              GitHub
+            </MagneticButton>
           </div>
-        </section>
+        </div>
 
-        {/* Skills Section */}
-        <section id="skills" className="skills">
-          <h2 className="section-title">Módulos Instalados</h2>
+        <div className="scroll-indicator animate-in delay-4">
+          <span>Scroll</span>
+          <ArrowDown size={16} />
+        </div>
+      </section>
+
+      {/* Sobre mí */}
+      <section id="sobre-mi" className="section">
+        <div className="section-container">
+          <div className="about-grid">
+            <div>
+              <p className="section-label">01 — Sobre mí</p>
+              <h2 className="section-title">
+                Donde la economía<br/>
+                <span style={{color: 'var(--text-secondary)'}}>encuentra la tecnología</span>
+              </h2>
+              <div className="about-text">
+                <p>
+                  Soy Rodrigo, estudiante de Economía de la <strong>UNSA Arequipa</strong>. 
+                  Creo firmemente que la <strong>Economía del futuro</strong> está codificada en datos.
+                </p>
+                <p>
+                  Iniciando mi formación académica, busco dominar las herramientas de <strong>Inteligencia Artificial y Análisis de Datos</strong> para evolucionar los paradigmas tradicionales.
+                </p>
+                <p>
+                  Mi meta final es transicionar hacia la <strong>Ingeniería de Sistemas</strong>, arquitectando soluciones tecnológicas complejas y automatizadas con un impacto social medible.
+                </p>
+              </div>
+            </div>
+
+            <div className="stats-grid">
+              <div className="stat-card">
+                <GraduationCap size={24} />
+                <p className="stat-title">UNSA</p>
+                <p className="stat-desc">Economía · 2do Semestre</p>
+              </div>
+              <div className="stat-card">
+                <Terminal size={24} />
+                <p className="stat-title">Ingeniería</p>
+                <p className="stat-desc">Objetivo: Arquitectura de Software</p>
+              </div>
+              <div className="stat-card">
+                <MapPin size={24} />
+                <p className="stat-title">Arequipa</p>
+                <p className="stat-desc">Perú</p>
+              </div>
+              <div className="stat-card">
+                <Cpu size={24} />
+                <p className="stat-title">Automatización</p>
+                <p className="stat-desc">Python & Next.js</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Habilidades */}
+      <section id="habilidades" className="section">
+        <div className="section-container">
+          <p className="section-label">02 — Módulos Instalados</p>
+          <h2 className="section-title">Mis capacidades</h2>
+
           <div className="skills-grid">
-            <div className="skill-card glass">
-              <TrendingUp size={40} color="var(--accent-cyan)" />
-              <h3>Análisis de Datos</h3>
-              <p style={{color: 'var(--text-secondary)', fontSize: '0.9rem'}}>Estadística aplicada (Niveles I y II aprobados). Pensamiento crítico para toma de decisiones.</p>
+            <div className="skill-box">
+              <div className="skill-header">
+                <TrendingUp size={20} style={{color: 'var(--text-primary)'}} />
+                <h3>Data & Economía</h3>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">Análisis Estadístico</span>
+                  <span className="skill-level">Avanzado</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '85%'}}></div></div>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">Teoría Económica</span>
+                  <span className="skill-level">Intermedio</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '70%'}}></div></div>
+              </div>
             </div>
-            <div className="skill-card glass">
-              <Database size={40} color="var(--accent-purple)" />
-              <h3>Python Core</h3>
-              <p style={{color: 'var(--text-secondary)', fontSize: '0.9rem'}}>Bases firmes en scripts, procesamiento de datos y automatización de sistemas.</p>
+
+            <div className="skill-box">
+              <div className="skill-header">
+                <Database size={20} style={{color: 'var(--text-primary)'}} />
+                <h3>Programación</h3>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">Python Core</span>
+                  <span className="skill-level">Sólido</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '90%'}}></div></div>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">React / Next.js</span>
+                  <span className="skill-level">Explorando</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '60%'}}></div></div>
+              </div>
             </div>
-            <div className="skill-card glass">
-              <Code size={40} color="var(--accent-cyan)" />
-              <h3>Web Interfaces</h3>
-              <p style={{color: 'var(--text-secondary)', fontSize: '0.9rem'}}>Integración de UI/UX, explorando React y arquitecturas frontend como Next.js.</p>
-            </div>
-            <div className="skill-card glass">
-              <Activity size={40} color="var(--accent-purple)" />
-              <h3>Machine Learning</h3>
-              <p style={{color: 'var(--text-secondary)', fontSize: '0.9rem'}}>Investigación teórica sobre la aplicación de modelos de IA para resolver problemas económicos.</p>
+
+            <div className="skill-box">
+              <div className="skill-header">
+                <Brain size={20} style={{color: 'var(--text-primary)'}} />
+                <h3>Inteligencia Artificial</h3>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">Machine Learning</span>
+                  <span className="skill-level">Teórico</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '65%'}}></div></div>
+              </div>
+              <div className="skill-item">
+                <div className="skill-item-top">
+                  <span className="skill-name">Lógica Algorítmica</span>
+                  <span className="skill-level">Sólida</span>
+                </div>
+                <div className="skill-bar"><div className="skill-fill" style={{width: '80%'}}></div></div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Projects Section */}
-        <section id="projects" className="projects">
-          <h2 className="section-title">Proyectos en Despliegue</h2>
+      {/* Proyectos */}
+      <section id="proyectos" className="section">
+        <div className="section-container">
+          <p className="section-label">03 — Proyectos</p>
+          <h2 className="section-title">Trabajo reciente</h2>
+
           <div className="projects-grid">
-            
-            {/* Project 1 */}
-            <div className="project-card glass">
-              <div className="project-img">
-                 <TrendingUp size={80} color="var(--accent-cyan)" style={{filter: 'drop-shadow(0 0 10px var(--accent-cyan))'}} />
+            <div className="project-card">
+              <div className="project-icon-wrapper">
+                <TrendingUp size={48} />
               </div>
               <div className="project-info">
                 <h3>Dashboard Inflación</h3>
                 <p>Módulo de análisis y visualización interactiva de índices inflacionarios y variables macroeconómicas.</p>
-                <div className="project-links">
-                  <a href="https://github.com/AnderMC66/DASHBOARD-INFLACION" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Repositorio
-                  </a>
-                </div>
+                <a href="https://github.com/AnderMC66/DASHBOARD-INFLACION" target="_blank" rel="noreferrer" className="project-link">
+                  <Code size={14} /> Repositorio
+                </a>
               </div>
             </div>
 
-            {/* Project 2 */}
-            <div className="project-card glass">
-              <div className="project-img">
-                 <Database size={80} color="var(--accent-purple)" style={{filter: 'drop-shadow(0 0 10px var(--accent-purple))'}} />
+            <div className="project-card">
+              <div className="project-icon-wrapper">
+                <Database size={48} />
               </div>
               <div className="project-info">
                 <h3>MCP BCRP</h3>
                 <p>Servidor Model Context Protocol diseñado para interconectar IAs con las bases de datos del Banco Central de Reserva.</p>
-                <div className="project-links">
-                  <a href="https://github.com/AnderMC66/mcp-bcr" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Repositorio
-                  </a>
-                </div>
+                <a href="https://github.com/AnderMC66/mcp-bcr" target="_blank" rel="noreferrer" className="project-link">
+                  <Code size={14} /> Repositorio
+                </a>
               </div>
             </div>
-            
-            {/* Project 3 */}
-            <div className="project-card glass">
-              <div className="project-img">
-                 <Cpu size={80} color="var(--accent-cyan)" style={{filter: 'drop-shadow(0 0 10px var(--accent-cyan))'}} />
+
+            <div className="project-card">
+              <div className="project-icon-wrapper">
+                <Cpu size={48} />
               </div>
               <div className="project-info">
                 <h3>MCP SUNAT / MEF</h3>
                 <p>Herramientas MCP avanzadas para minería y análisis de datos tributarios y económicos del gobierno peruano.</p>
-                <div className="project-links">
-                  <a href="https://github.com/AnderMC66/mcp-sunat" target="_blank" rel="noreferrer" className="btn btn-outline" style={{padding: '0.5rem 1rem', fontSize: '0.8rem'}}>
-                    <Code size={16} /> Repositorio
-                  </a>
-                </div>
+                <a href="https://github.com/AnderMC66/mcp-sunat" target="_blank" rel="noreferrer" className="project-link">
+                  <Code size={14} /> Repositorio
+                </a>
               </div>
             </div>
-
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer id="contact" className="footer">
-          <div className="social-links">
-            <a href="https://github.com/AnderMC66" target="_blank" rel="noreferrer" className="social-icon">
-              <Code size={24} />
-            </a>
-            <a href="mailto:rodrigocapiz67@gmail.com" className="social-icon">
-              <Mail size={24} />
-            </a>
-          </div>
-          <p style={{textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.8rem'}}>
-            <span style={{color: 'var(--accent-cyan)'}}>FIN_SISTEMA</span> © 2026 Rodrigo Anderson Capia Condori.
-          </p>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer id="contacto" className="footer">
+        <div className="social-links">
+          <MagneticButton href="https://github.com/AnderMC66" target="_blank" rel="noreferrer" className="social-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          </MagneticButton>
+          <MagneticButton href="mailto:rodrigocapiz67@gmail.com" className="social-icon">
+            <Mail size={24} />
+          </MagneticButton>
+        </div>
+        <p>
+          FIN_SISTEMA © 2026 RODRIGO ANDERSON CAPIA CONDORI
+        </p>
+      </footer>
     </div>
   );
 }
